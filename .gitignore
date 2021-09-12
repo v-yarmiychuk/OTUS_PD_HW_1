@@ -1,0 +1,11 @@
+### IDE ###
+/.idea/
+/.vscode/
+.vimrc
+
+### Virtual Env ###
+/venv/
+
+### CACHE ###
+*.egg-info/
+*.egg
