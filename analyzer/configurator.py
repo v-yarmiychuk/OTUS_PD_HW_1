@@ -6,12 +6,12 @@ import yaml
 
 class Conf:
     config = {}
+    default_config_path = 'configs/default_config.yaml'
 
     def __init__(self, stream) -> None:
         self.logger = logging.getLogger(f'log_analyzer.Conf')
 
-        default_config = 'configs/default_config.yaml'
-        with open(default_config, 'r') as f:
+        with open(Conf.default_config_path, 'r') as f:
             self._load_config(f, default=True)
 
         if stream:

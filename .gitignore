@@ -9,3 +9,7 @@
 ### CACHE ###
 *.egg-info/
 *.egg
+
+### LOG ###
+/log/
+*.log
