@@ -15,9 +15,10 @@ class LogParser:
         )
         self.status_len = [0, 0]
         self.raw_data = {}
+        self.processed_data = []
         self.total_request_time = 0
 
-    def __call__(self, *args, **kwargs) -> dict:
+    def __call__(self, *args, **kwargs) -> list:
         with self.log_opener(self.path, mode="rt") as f:
             for url in self._log_parser(f):
                 raw_data = self.raw_data.setdefault(url.group('url'), {'request_times': []})
@@ -27,7 +28,7 @@ class LogParser:
         self._check_status_len()
         self._data_calculation()
 
-        return self.raw_data
+        return self.processed_data
 
     def _check_status_len(self, error_threshold: int = 50) -> None:
         error_perc = self.status_len[1] * 100 / sum(self.status_len)
@@ -38,15 +39,18 @@ class LogParser:
 
     def _data_calculation(self) -> None:
         for url, url_data in self.raw_data.items():
-            url_data['count'] = len(url_data['request_times'])
-            url_data['count_perc'] = url_data['count'] * 100 / self.status_len[0]
-            url_data['time_sum'] = sum(url_data['request_times'])
-            url_data['time_perc'] = url_data['time_sum'] * 100 / self.total_request_time
-            url_data['time_avg'] = sum(url_data['request_times']) / len(url_data['request_times'])
-            url_data['time_max'] = max(url_data['request_times'])
-            url_data['time_med'] = statistics.median(url_data['request_times'])
+            data_item = {}
 
-            url_data.pop('request_times', None)
+            data_item['url'] = url
+            data_item['count'] = len(url_data['request_times'])
+            data_item['count_perc'] = data_item['count'] * 100 / self.status_len[0]
+            data_item['time_sum'] = sum(url_data['request_times'])
+            data_item['time_perc'] = data_item['time_sum'] * 100 / self.total_request_time
+            data_item['time_avg'] = sum(url_data['request_times']) / len(url_data['request_times'])
+            data_item['time_max'] = max(url_data['request_times'])
+            data_item['time_med'] = statistics.median(url_data['request_times'])
+
+            self.processed_data.append(data_item)
 
     def _log_parser(self, file_obj):
         while True:
@@ -59,3 +63,8 @@ class LogParser:
                 yield res
             else:
                 self.status_len[1] += 1
+
+
+a = {
+    "url": "/api/v2/internal/html5/phantomjs/queue/?wait=1m",
+}
