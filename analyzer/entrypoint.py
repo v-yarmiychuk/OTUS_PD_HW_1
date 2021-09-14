@@ -36,9 +36,6 @@ class Arguments:
 
 def run():
     os.chdir(os.path.join(os.path.dirname(analyzer.__file__), os.path.pardir))
-
-    logger.info('start log analyzer')
-
     args = Arguments().parse()
     conf = Conf(args.config)
 
