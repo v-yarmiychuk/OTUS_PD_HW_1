@@ -34,7 +34,7 @@ class Arguments:
         return self.args
 
 
-def run():
+def run_():
     os.chdir(os.path.join(os.path.dirname(analyzer.__file__), os.path.pardir))
     args = Arguments().parse()
     conf = Conf(args.config)
@@ -44,11 +44,21 @@ def run():
         fh.setFormatter(log_format)
         logger.addHandler(fh)
 
+    logger.info('start log analyzer')
     log = LogSelector(conf.log_dir)()
     log_data = LogParser(log.path, log.gz_flag)()
-
+    log_data = sorted(log_data, key=lambda k: k['count'], reverse=True)
+    log_data = log_data[0:conf.report_size]
     ReportGenerator(
         template_path='./templates/report.html',
         report_path=os.path.join(conf.report_dir, f'report_{log.date.strftime("%d_%m_%Y")}.html'),
         report_data={'table_json': json.dumps(log_data)}
-    )(overwrite=False)
+    )(overwrite=True)
+
+
+def run():
+    try:
+        run_()
+    except BaseException as e:
+        logger.exception(e)
+        raise e
