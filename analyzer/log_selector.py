@@ -7,15 +7,15 @@ from collections import namedtuple
 
 
 class LogSelector:
-    _PATTERN = '(?P<year>20[0-9][0-9])' \
-               '(?P<month>[1-9]|1[0-2]|0[0-9])' \
-               '(?P<day>[1-9]|1[0-9]|2[0-9]|3[0-1]|0[0-9])$'
-
     def __init__(self, path: str) -> None:
         self.logger = logging.getLogger(f'log_analyzer.Selector')
         self.path: str = path
         self.log_file: dict = {}
-        self._pattern = re.compile(self._PATTERN)
+        self._pattern = re.compile(
+            '(?P<year>20[0-9][0-9])'
+            '(?P<month>[1-9]|1[0-2]|0[0-9])'
+            '(?P<day>[1-9]|1[0-9]|2[0-9]|3[0-1]|0[0-9])$'
+        )
 
     def _check_path(self) -> bool:
         ret = False
