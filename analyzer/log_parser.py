@@ -2,6 +2,7 @@ import gzip
 import logging
 import re
 import statistics
+import time
 
 
 class LogParser:
@@ -19,6 +20,8 @@ class LogParser:
         self.total_request_time = 0
 
     def __call__(self, *args, **kwargs) -> list:
+        start = time.perf_counter()
+
         with self.log_opener(self.path, mode="rt") as f:
             for url in self._log_parser(f):
                 raw_data = self.raw_data.setdefault(url.group('url'), {'request_times': []})
@@ -28,14 +31,13 @@ class LogParser:
         self._check_status_len()
         self._data_calculation()
 
+        self.logger.info(f'log file parsed on: {time.perf_counter() - start} ')
         return self.processed_data
 
     def _check_status_len(self, error_threshold: int = 50) -> None:
         error_perc = self.status_len[1] * 100 / sum(self.status_len)
         if error_perc > error_threshold:
-            mes = f'error percentage ({error_perc}) exceeds the threshold ({error_threshold})'
-            self.logger.error(mes)
-            raise Exception(mes)
+            raise Exception(f'error percentage ({error_perc}) exceeds the threshold ({error_threshold})')
 
     def _data_calculation(self) -> None:
         for url, url_data in self.raw_data.items():

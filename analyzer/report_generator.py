@@ -16,9 +16,7 @@ class ReportGenerator:
         Path(os.path.dirname(self.report_path)).mkdir(parents=True, exist_ok=True)
 
         if os.path.exists(self.report_path) and not overwrite:
-            msg = 'the report file already exists'
-            self.logger.error(msg)
-            raise Exception(msg)
+            raise Exception('the report file already exists')
 
         with open(self.template_path, mode="rt") as f:
             report = Template(f.read()).safe_substitute(self.report_data)

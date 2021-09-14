@@ -18,17 +18,12 @@ class LogSelector:
         )
 
     def _check_path(self):
-        msg = ''
         if not self.path:
-            msg = 'log_dir directory not specified'
+            raise Exception('log_dir directory not specified')
         elif not os.path.isdir(self.path):
-            msg = f'log_dit {self.path} is not a directory'
+            raise Exception(f'log_dit {self.path} is not a directory')
         elif not os.path.exists(self.path):
-            msg = f'log_dit {self.path} directory does not exist'
-
-        if msg:
-            self.logger.error(msg)
-            raise Exception(msg)
+            raise Exception(f'log_dit {self.path} directory does not exist')
 
     def _parse_date(self, text: str) -> datetime.date:
         res = self._pattern.search(text)
@@ -58,7 +53,6 @@ class LogSelector:
                     gz_flag = True
                 else:
                     gz_flag = False
-
                 try:
                     current_date = self._parse_date(file_extension)
                 except ValueError as e:
@@ -68,14 +62,12 @@ class LogSelector:
                 if log_date < current_date:
                     log_date, log_path, log_gz_flag = current_date, os.path.join(root, file), gz_flag
                 elif log_date == current_date:
-                    msg = f'found two log files with the same dates {log_path, os.path.join(root, file)}'
-                    self.logger.error(msg)
-                    raise Exception(msg)
+                    raise Exception(
+                        f'found two log files with the same dates {log_path, os.path.join(root, file)}'
+                    )
 
         if log_path is None:
-            msg = 'log file not found'
-            self.logger.error(msg)
-            raise Exception(msg)
+            raise Exception('log file not found')
 
         self.logger.info(f'selected log file {log_path}')
         return Log(log_path, log_date, log_gz_flag)
