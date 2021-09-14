@@ -1,5 +1,6 @@
 # PYTHON_ARGCOMPLETE_OK
 import argparse
+import json
 import logging
 import os
 
@@ -11,6 +12,7 @@ from analyzer.log_parser import LogParser
 from analyzer.log_selector import LogSelector
 from analyzer.logger import log_format
 from analyzer.logger import logger
+from analyzer.report_generator import ReportGenerator
 
 
 class Arguments:
@@ -45,14 +47,11 @@ def run():
         fh.setFormatter(log_format)
         logger.addHandler(fh)
 
-    logger.info(args.config)
-    logger.info(conf.config)
+    log = LogSelector(conf.log_dir)()
+    log_data = LogParser(log.path, log.gz_flag)()
 
-    log_selector = LogSelector(conf.log_dir)
-    log = log_selector()
-    if log.path is not None:
-        log_parser = LogParser(log.path, log.gz_flag)
-        data = log_parser()
-
-
-
+    ReportGenerator(
+        template_path='./templates/report.html',
+        report_path=os.path.join(conf.report_dir, f'report_{log.date.strftime("%d_%m_%Y")}.html'),
+        report_data={'table_json': json.dumps(log_data)}
+    )(overwrite=False)
