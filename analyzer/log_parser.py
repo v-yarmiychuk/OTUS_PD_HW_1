@@ -63,8 +63,3 @@ class LogParser:
                 yield res
             else:
                 self.status_len[1] += 1
-
-
-a = {
-    "url": "/api/v2/internal/html5/phantomjs/queue/?wait=1m",
-}
