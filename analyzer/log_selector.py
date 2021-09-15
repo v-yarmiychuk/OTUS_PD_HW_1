@@ -17,7 +17,7 @@ class LogSelector:
             '(?P<day>[1-9]|1[0-9]|2[0-9]|3[0-1]|0[0-9])$'
         )
 
-    def _check_path(self):
+    def _check_path(self) -> None:
         if not self.path:
             raise Exception('log_dir directory not specified')
         elif not os.path.isdir(self.path):

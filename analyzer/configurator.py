@@ -1,5 +1,7 @@
 import logging.config
 from typing import Any
+from typing import Optional
+from typing import TextIO
 
 import yaml
 
@@ -8,7 +10,7 @@ class Conf:
     config = {}
     default_config_path = 'configs/default_config.yaml'
 
-    def __init__(self, stream) -> None:
+    def __init__(self, stream: Optional[TextIO]) -> None:
         self.logger = logging.getLogger(f'log_analyzer.Conf')
 
         with open(Conf.default_config_path, 'r') as f:
@@ -17,7 +19,7 @@ class Conf:
         if stream:
             self._load_config(stream)
 
-    def _load_config(self, stream, default: bool = False) -> None:
+    def _load_config(self, stream: TextIO, default: bool = False) -> None:
         data = yaml.safe_load(stream)
         for key, value in data.items():
             if default:

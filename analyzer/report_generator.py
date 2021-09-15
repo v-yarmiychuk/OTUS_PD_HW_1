@@ -11,7 +11,7 @@ class ReportGenerator:
         self.report_path = report_path
         self.report_data = report_data
 
-    def __call__(self, overwrite: bool = True, *args, **kwargs):
+    def __call__(self, overwrite: bool = True, *args, **kwargs) -> None:
         Path(os.path.dirname(self.template_path)).mkdir(parents=True, exist_ok=True)
         Path(os.path.dirname(self.report_path)).mkdir(parents=True, exist_ok=True)
 

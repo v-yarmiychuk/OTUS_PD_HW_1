@@ -3,6 +3,7 @@ import argparse
 import json
 import logging
 import os
+from typing import Any
 
 import argcomplete
 
@@ -16,7 +17,7 @@ from analyzer.report_generator import ReportGenerator
 
 
 class Arguments:
-    def __init__(self):
+    def __init__(self) -> None:
         self.parser = argparse.ArgumentParser(
             description='training log parser')
         self.parser.add_argument(
@@ -29,12 +30,12 @@ class Arguments:
         self.args = None
         self.parser.parse_args()
 
-    def parse(self):
+    def parse(self) -> Any:
         self.args = self.parser.parse_args()
         return self.args
 
 
-def run_():
+def run_() -> None:
     os.chdir(os.path.join(os.path.dirname(analyzer.__file__), os.path.pardir))
     args = Arguments().parse()
     conf = Conf(args.config)
@@ -56,7 +57,7 @@ def run_():
     )(overwrite=True)
 
 
-def run():
+def run() -> None:
     try:
         run_()
     except BaseException as e:

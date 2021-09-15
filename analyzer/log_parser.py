@@ -3,6 +3,10 @@ import logging
 import re
 import statistics
 import time
+from typing import AnyStr
+from typing import Match
+from typing import Optional
+from typing import TextIO
 
 
 class LogParser:
@@ -11,7 +15,17 @@ class LogParser:
         self.path = path
         self.log_opener = gzip.open if gz else open
         self._pattern = re.compile(
-            r"""(?P<ipaddress>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) .* (?P<remoteuser>.*) .* \[(?P<dateandtime>\d{2}\/[a-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|\-)\d{4})\] ((\"(?P<method>.+) )(?P<url>.+)(http\/[1-2]\.[0-9]")) (?P<statuscode>\d{3}) (?P<bytessent>\d+) (["](?P<refferer>(\-)|(.+))["]) (?P<http_user_agent>.+?(?=\ ))\s+"-"\s+"(?P<x_forwaded_for>(.+?))"\s+"(?P<http_xb_user>(.+?))"\s+(?P<request_time>[+-]?([0-9]*[.])?[0-9]+)""",
+            r'(?P<ipaddress>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) .* '
+            r'(?P<remoteuser>.*) .* '
+            r'\[(?P<dateandtime>\d{2}\/[a-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|\-)\d{4})\] '
+            r'((\"(?P<method>.+) )(?P<url>.+)(http\/[1-2]\.[0-9]")) '
+            r'(?P<statuscode>\d{3}) '
+            r'(?P<bytessent>\d+) '
+            r'(["](?P<refferer>(\-)|(.+))["]) '
+            r'(?P<http_user_agent>.+?(?=\ ))\s+"-"\s+"'
+            r'(?P<x_forwaded_for>(.+?))"\s+"'
+            r'(?P<http_xb_user>(.+?))"\s+'
+            r'(?P<request_time>[+-]?([0-9]*[.])?[0-9]+)',
             re.IGNORECASE
         )
         self.status_len = [0, 0]
@@ -54,7 +68,7 @@ class LogParser:
 
             self.processed_data.append(data_item)
 
-    def _log_parser(self, file_obj):
+    def _log_parser(self, file_obj: TextIO) -> Optional[Match[AnyStr]]:
         while True:
             data = file_obj.readline()
             if not data:
