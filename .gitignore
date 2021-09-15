@@ -9,6 +9,5 @@
 ### CACHE ###
 *.egg-info/
 *.egg
-/log/
 *.log
 /reports/
