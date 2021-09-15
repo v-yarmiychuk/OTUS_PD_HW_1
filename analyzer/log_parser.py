@@ -31,7 +31,7 @@ class LogParser:
         self._check_status_len()
         self._data_calculation()
 
-        self.logger.info(f'log file parsed on: {time.perf_counter() - start} ')
+        self.logger.info(f'log file parsed in: {time.perf_counter() - start} ')
         return self.processed_data
 
     def _check_status_len(self, error_threshold: int = 50) -> None:
